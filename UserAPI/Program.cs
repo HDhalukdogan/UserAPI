@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.Text;
 using UserAPI.Data;
 using UserAPI.Entities;
+using UserAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,22 @@ builder.Services.AddIdentityCore<AppUser>(opt =>
     .AddRoleValidator<RoleValidator<AppRole>>()
     .AddEntityFrameworkStores<IdentityContext>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+   .AddJwtBearer(opt =>
+   {
+       opt.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = false,
+           ValidateAudience = false,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+               .GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
+       };
+   });
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<TokenService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
