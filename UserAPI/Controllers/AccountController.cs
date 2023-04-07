@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -55,11 +56,25 @@ namespace UserAPI.Controllers
             };
         }
 
+        [Authorize]
+        [HttpGet("currentUser")]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+
+            return new UserDto
+            {
+                Email = user.Email,
+                Token = await _tokenService.GenerateToken(user),
+            };
+        }
 
         [HttpPost("createrole")]
         public async Task<IActionResult> CreateRole(string roleName)
         {
             var role = await _roleManager.FindByNameAsync(roleName);
+
             if (role != null)
                 return BadRequest("Role already exists");
 
