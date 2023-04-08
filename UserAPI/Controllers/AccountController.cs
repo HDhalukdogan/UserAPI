@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Net.Mail;
+using System.Web;
 using UserAPI.DTOs;
 using UserAPI.Entities;
 using UserAPI.Services;
@@ -57,6 +59,20 @@ namespace UserAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet("currentUser")]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+
+            return new UserDto
+            {
+                Email = user.Email,
+                Token = await _tokenService.GenerateToken(user),
+            };
+        }
+
+        [Authorize]
         [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
         {
@@ -76,19 +92,59 @@ namespace UserAPI.Controllers
         }
 
 
-        [Authorize]
-        [HttpGet("currentUser")]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+
+
+        [HttpPost("forgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-
-
-            return new UserDto
+            var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+            if (user == null)
             {
-                Email = user.Email,
-                Token = await _tokenService.GenerateToken(user),
-            };
+                return BadRequest("User not found");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = HttpUtility.UrlEncode(token);
+            var resetUrl = $"{forgotPasswordDto.BaseUrl}/resetPassword?userId={user.Id}&token={encodedToken}";
+
+            //var body = $"Click <a href=\"{resetUrl}\">here</a> to reset your password.";
+
+            //var message = new MailMessage
+            //{
+            //    From = new MailAddress("your-email-address@example.com"),
+            //    Subject = "Password reset",
+            //    Body = body,
+            //    IsBodyHtml = true
+            //};
+            //message.To.Add(forgotPasswordDto.Email);
+
+            //using (var smtp = new SmtpClient())
+            //{
+            //    await smtp.SendMailAsync(message);
+            //}
+
+            return Ok(resetUrl);
         }
+
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await _userManager.FindByIdAsync(resetPasswordDto.UserId);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var decodedToken = HttpUtility.UrlDecode(resetPasswordDto.Token);
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok();
+        }
+
 
         [HttpPost("createrole")]
         public async Task<IActionResult> CreateRole(string roleName)

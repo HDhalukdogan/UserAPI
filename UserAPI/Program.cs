@@ -28,7 +28,8 @@ builder.Services.AddIdentityCore<AppUser>(opt =>
     .AddRoleManager<RoleManager<AppRole>>()
     .AddSignInManager<SignInManager<AppUser>>()
     .AddRoleValidator<RoleValidator<AppRole>>()
-    .AddEntityFrameworkStores<IdentityContext>();
+    .AddEntityFrameworkStores<IdentityContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
    .AddJwtBearer(opt =>
    {
