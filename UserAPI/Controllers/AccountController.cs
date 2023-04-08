@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Net.Mail;
 using System.Web;
@@ -145,7 +146,7 @@ namespace UserAPI.Controllers
             return Ok();
         }
 
-
+        //[Authorize(Roles ="admin")]
         [HttpPost("createrole")]
         public async Task<IActionResult> CreateRole(string roleName)
         {
@@ -167,5 +168,149 @@ namespace UserAPI.Controllers
 
             return StatusCode(201);
         }
+        //[Authorize(Roles ="admin")]
+        [HttpDelete("deleterole/{roleName}")]
+        public async Task<IActionResult> DeleteRole(string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                return NotFound();
+            }
+            var result = await _roleManager.DeleteAsync(role);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+            return StatusCode(201);
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpPut("updaterole/{roleName}")]
+        public async Task<IActionResult> UpdateRole(string roleName, string updatedName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                return NotFound();
+            }
+            role.Name = updatedName;
+            var result = await _roleManager.UpdateAsync(role);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+            return StatusCode(201);
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpGet("getAllRoles")]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            return Ok(roles);
+
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpPost("edit-roles/{username}")]
+        public async Task<IActionResult> EditRoles(string username, [FromQuery] string roles)
+        {
+            var selectedRoles = roles.Split(",").ToArray();
+
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null) return NotFound("Could not find user");
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+
+            if (!result.Succeeded) return BadRequest("Failed to add to roles");
+
+            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+
+            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
+
+            return Ok(await _userManager.GetRolesAsync(user));
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpPost("add-role-user/{username}")]
+        public async Task<IActionResult> AddRoleToUser(string username, [FromQuery] string role)
+        {
+
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null) return NotFound("Could not find user");
+
+
+            var result = await _userManager.AddToRoleAsync(user, role);
+
+            if (!result.Succeeded) return BadRequest("Failed to add to roles");
+
+            return Ok(await _userManager.GetRolesAsync(user));
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpPost("remove-role-user/{username}")]
+        public async Task<IActionResult> RemoveRoleFromUser(string username, [FromQuery] string role)
+        {
+
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null) return NotFound("Could not find user");
+
+
+            var result = await _userManager.RemoveFromRoleAsync(user, role);
+
+            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
+
+            return Ok(await _userManager.GetRolesAsync(user));
+        }
+        //[Authorize(Roles = "admin")]
+        [HttpGet("roles-with-users")]
+        public async Task<IActionResult> GetRolesWithUsers()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolesWithUsers = new List<object>();
+
+            foreach (var role in roles)
+            {
+                var users = await _userManager.GetUsersInRoleAsync(role.Name);
+                rolesWithUsers.Add(new { role = role.Name, users = users.Select(s => s.UserName).ToList() });
+            }
+
+            return Ok(rolesWithUsers);
+        }
+        //[Authorize(Roles = "admin")]
+        [HttpGet("users-with-roles")]
+        public async Task<IActionResult> GetUsersWithRoles()
+        {
+            var users = await _userManager.Users
+                .Include(r => r.AppUserRoles)
+                .ThenInclude(r => r.AppRole)
+                .OrderBy(u => u.UserName)
+                .Select(u => new
+                {
+                    u.Id,
+                    Username = u.UserName,
+                    Roles = u.AppUserRoles.Select(r => r.AppRole.Name).ToList()
+                })
+                .ToListAsync();
+
+            return Ok(users);
+        }
+        //[Authorize(Roles ="admin")]
+        [HttpGet("getAllUser")]
+        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
+
+
     }
 }
