@@ -22,7 +22,8 @@ const Account = {
     login: (values) => request.post('account/login', values),
     register: (values) => request.post('account/register', values),
     currentUser: () => request.get('account/currentUser'),
-    getAllUser: ()=>request.get("account/getAllUser")
+    getAllUser: ()=>request.get("account/getAllUser"),
+    forgotPassword: (values) => request.post('account/forgotPassword', values),
 }
 
 const agent = {

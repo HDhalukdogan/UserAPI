@@ -34,6 +34,13 @@ const pages = {
                     type: 'item',
                     url: '/pages/register/register3',
                     target: true
+                },
+                {
+                    id: 'forgetpassword3',
+                    title: 'forgetpassword3',
+                    type: 'item',
+                    url: '/pages/forgetpassword/forgetpassword3',
+                    target: true
                 }
             ]
         }
