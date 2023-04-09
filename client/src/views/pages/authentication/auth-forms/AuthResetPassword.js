@@ -1,4 +1,5 @@
-
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -7,6 +8,8 @@ import {
     FormControl,
     FormHelperText,
     Grid,
+    IconButton,
+    InputAdornment,
     InputLabel,
     OutlinedInput,
     Typography,
@@ -19,43 +22,52 @@ import { Formik } from 'formik';
 // project imports
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+
+// assets
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import agent from 'api/agent';
-import { useNavigate } from 'react-router-dom';
 
 
 
-
-
-const FirebaseForgotPassword = ({ ...others }) => {
+const FirebaseResetPassword = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
-    const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
 
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Enter Your Email</Typography>
+                        <Typography variant="subtitle1">Enter New Password</Typography>
                     </Box>
                 </Grid>
             </Grid>
 
             <Formik
                 initialValues={{
-                    email: '',
+                    userId: searchParams.get('userId'),
+                    token: decodeURIComponent(searchParams.get('token')),
+                    newPassword: 'Pa$$w0rd',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    newPassword: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.forgotPassword(values).then(res=> console.log('res', res)).catch(err=>console.log('err', err))
-                        //navigate(res, { replace: true })
+                        agent.Account.resetPassword(values).then(res=> console.log('res', res)).catch(err=>console.log('err', err))
                         setSubmitting(true)
                         if (scriptedRef.current) {
                             setStatus({ success: true });
@@ -73,21 +85,38 @@ const FirebaseForgotPassword = ({ ...others }) => {
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Email Address</InputLabel>
+                        <FormControl
+                            fullWidth
+                            error={Boolean(touched.newPassword && errors.newPassword)}
+                            sx={{ ...theme.typography.customInput }}
+                        >
+                            <InputLabel htmlFor="outlined-adornment-password-login">New Password</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-email-login"
-                                type="email"
-                                value={values.email}
-                                name="email"
+                                id="outlined-adornment-password-login"
+                                type={showPassword ? 'text' : 'password'}
+                                value={values.newPassword}
+                                name="newPassword"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                label="Email Address"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                            size="large"
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
                                 inputProps={{}}
                             />
-                            {touched.email && errors.email && (
-                                <FormHelperText error id="standard-weight-helper-text-email-login">
-                                    {errors.email}
+                            {touched.newPassword && errors.newPassword && (
+                                <FormHelperText error id="standard-weight-helper-text-password-login">
+                                    {errors.newPassword}
                                 </FormHelperText>
                             )}
                         </FormControl>
@@ -108,7 +137,7 @@ const FirebaseForgotPassword = ({ ...others }) => {
                                     variant="contained"
                                     color="secondary"
                                 >
-                                    Send Email
+                                    Reset Password
                                 </Button>
                             </AnimateButton>
                         </Box>
@@ -119,4 +148,4 @@ const FirebaseForgotPassword = ({ ...others }) => {
     );
 };
 
-export default FirebaseForgotPassword;
+export default FirebaseResetPassword;

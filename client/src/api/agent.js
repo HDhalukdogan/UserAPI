@@ -24,6 +24,7 @@ const Account = {
     currentUser: () => request.get('account/currentUser'),
     getAllUser: ()=>request.get("account/getAllUser"),
     forgotPassword: (values) => request.post('account/forgotPassword', values),
+    resetPassword: (values) => request.post('account/resetPassword', values),
 }
 
 const agent = {
