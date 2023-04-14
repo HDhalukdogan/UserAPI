@@ -54,8 +54,7 @@ const FirebaseForgotPassword = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.forgotPassword(values).then(res=> console.log('res', res)).catch(err=>console.log('err', err))
-                        //navigate(res, { replace: true })
+                        agent.Account.forgotPassword(values).then(res=> navigate(res, { replace: true })).catch(err=>console.log('err', err))
                         setSubmitting(true)
                         if (scriptedRef.current) {
                             setStatus({ success: true });

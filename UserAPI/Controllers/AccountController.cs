@@ -106,8 +106,8 @@ namespace UserAPI.Controllers
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = HttpUtility.UrlEncode(token);
-            //var resetUrl = $"pages/resetpassword/resetpassword3?userId={user.Id}&token={encodedToken}";
-            var resetUrl = $"{forgotPasswordDto.BaseUrl}/pages/resetpassword/resetpassword3?userId={user.Id}&token={encodedToken}";
+            var resetUrl = $"/pages/resetpassword/resetpassword3?userId={user.Id}&token={encodedToken}";
+            //var resetUrl = $"{forgotPasswordDto.BaseUrl}/pages/resetpassword/resetpassword3?userId={user.Id}&token={encodedToken}";
 
             //var body = $"Click <a href=\"{resetUrl}\">here</a> to reset your password.";
 

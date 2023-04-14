@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -35,7 +35,7 @@ import agent from 'api/agent';
 const FirebaseLogin = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
-
+    const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -68,7 +68,13 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.login(values).then(user => console.log('user', user))
+                        agent.Account.login(values).then(user => {
+                            localStorage.setItem('user',JSON.stringify(user))
+                            let claims = JSON.parse(atob(user.token.split('.')[1]));
+                            console.log('claims', claims)
+                            navigate('/');
+                            console.log('user', user);
+                        })
                         setSubmitting(true)
                         if (scriptedRef.current) {
                             setStatus({ success: true });

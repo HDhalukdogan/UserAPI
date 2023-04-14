@@ -28,6 +28,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import agent from 'api/agent';
+import { useNavigate } from 'react-router';
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -35,6 +36,7 @@ const FirebaseRegister = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const [strength, setStrength] = useState(0);
     const [level, setLevel] = useState();
@@ -82,7 +84,7 @@ const FirebaseRegister = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.register(values).then(res=>console.log('res', res)).catch(err=>console.log('err', err))
+                        agent.Account.register(values).then(res=>navigate('/pages/login/login3')).catch(err=>console.log('err', err))
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
