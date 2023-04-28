@@ -27,7 +27,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import agent from 'api/agent';
+import { useDispatch } from 'react-redux';
+import { signInUser } from 'store';
 
 
 // ============================|| FIREBASE - LOGIN ||============================ //
@@ -36,6 +37,7 @@ const FirebaseLogin = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -68,13 +70,8 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.login(values).then(user => {
-                            localStorage.setItem('user',JSON.stringify(user))
-                            let claims = JSON.parse(atob(user.token.split('.')[1]));
-                            console.log('claims', claims)
-                            navigate('/');
-                            console.log('user', user);
-                        })
+                        await dispatch(signInUser(values));
+                        navigate('/');
                         setSubmitting(true)
                         if (scriptedRef.current) {
                             setStatus({ success: true });
