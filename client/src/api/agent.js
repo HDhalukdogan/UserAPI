@@ -32,6 +32,7 @@ const Account = {
     getAllUser: ()=>request.get("account/getAllUser"),
     forgotPassword: (values) => request.post('account/forgotPassword', values),
     resetPassword: (values) => request.post('account/resetPassword', values),
+    changePassword: (values) => request.post('account/changePassword', values),
 }
 
 const agent = {
