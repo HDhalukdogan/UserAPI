@@ -12,11 +12,13 @@ import NotificationSection from './NotificationSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
+import { useSelector } from 'react-redux';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = ({ handleLeftDrawerToggle }) => {
     const theme = useTheme();
+    const user = useSelector(s => s.account.user)
 
     return (
         <>
@@ -62,7 +64,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
             {/* notification & profile */}
             <NotificationSection />
-            <ProfileSection />
+            {user && <ProfileSection />}
         </>
     );
 };

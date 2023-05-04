@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -38,6 +38,7 @@ import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { signOut } from 'store';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -46,7 +47,7 @@ const ProfileSection = () => {
     const customization = useSelector((state) => state.customization);
     const navigate = useNavigate();
     const email= useSelector(state => state.account.user?.email)
-
+    const dispatch = useDispatch();
     const [sdm, setSdm] = useState(true);
     const [value, setValue] = useState('');
     const [notification, setNotification] = useState(false);
@@ -57,8 +58,8 @@ const ProfileSection = () => {
      * */
     const anchorRef = useRef(null);
     const handleLogout = async () => {
+        await dispatch(signOut());
         navigate('/pages/login/login3')
-        localStorage.removeItem('user')
     };
 
     const handleClose = (event) => {
@@ -250,7 +251,7 @@ const ProfileSection = () => {
                                                 <ListItemButton
                                                     sx={{ borderRadius: `${customization.borderRadius}px` }}
                                                     selected={selectedIndex === 0}
-                                                    onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
+                                                    onClick={(event) => handleListItemClick(event, 0, '/profile-page')}
                                                 >
                                                     <ListItemIcon>
                                                         <IconSettings stroke={1.5} size="1.3rem" />

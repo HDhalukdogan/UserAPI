@@ -7,14 +7,18 @@ import { Divider, List, Typography } from '@mui/material';
 // project imports
 import NavItem from '../NavItem';
 import NavCollapse from '../NavCollapse';
+import { useSelector } from 'react-redux';
 
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
 const NavGroup = ({ item }) => {
     const theme = useTheme();
-
+    const user = useSelector(s=>s.account.user)
     // menu list collapse & items
     const items = item.children?.map((menu) => {
+        if (user && menu.id === "authentication") {
+         return null;   
+        }
         switch (menu.type) {
             case 'collapse':
                 return <NavCollapse key={menu.id} menu={menu} level={1} />;
