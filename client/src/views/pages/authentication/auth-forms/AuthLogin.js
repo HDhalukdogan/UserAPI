@@ -70,13 +70,22 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        await dispatch(signInUser(values));
-                        navigate('/');
-                        setSubmitting(true)
-                        if (scriptedRef.current) {
-                            setStatus({ success: true });
-                            setSubmitting(false);
+                        const res = await dispatch(signInUser(values));
+                        if (!res.error) {
+                            navigate('/');
+                            setSubmitting(true)
+                            if (scriptedRef.current) {
+                                setStatus({ success: true });
+                                setSubmitting(false);
+                            }
+                        }else{
+                            if (scriptedRef.current) {
+                                setStatus({ success: false });
+                                setErrors({ submit: res.error.message });
+                                setSubmitting(false);
+                            }
                         }
+
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {

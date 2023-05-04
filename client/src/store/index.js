@@ -14,3 +14,4 @@ const persister = '';
 export { store, setMenu, menuToggle, menuOpen, storeFontFamily, storeBorderRadius, persister, signOut, setUser }
 
 export * from './thunks/signInUser';
+export * from './thunks/fetchCurrentUser';

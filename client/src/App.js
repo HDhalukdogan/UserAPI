@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
@@ -12,20 +12,24 @@ import themes from 'themes';
 // project imports
 import NavigationScroll from 'layout/NavigationScroll';
 import { useEffect } from 'react';
-import agent from 'api/agent';
+import { useCallback } from 'react';
+import { fetchCurrentUser } from 'store';
 
 // ==============================|| APP ||============================== //
 
 const App = () => {
     const customization = useSelector((state) => state.customization);
-    const getUsers = async () => {
-        const users = await agent.Account.getAllUser().then(res=>res);
-        console.log('users', users)
-    }
+    const dispatch = useDispatch();
+    const initApp = useCallback(async () => {
+        await dispatch(fetchCurrentUser());
+    }, [dispatch])
+
+
+
     useEffect(() => {
-       getUsers()
-    }, [])
-    
+        initApp()
+    }, [initApp])
+
 
     return (
         <StyledEngineProvider injectFirst>

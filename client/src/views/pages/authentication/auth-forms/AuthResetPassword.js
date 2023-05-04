@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -34,7 +34,7 @@ const FirebaseResetPassword = ({ ...others }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
@@ -67,7 +67,7 @@ const FirebaseResetPassword = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        agent.Account.resetPassword(values).then(res=> console.log('res', res)).catch(err=>console.log('err', err))
+                        agent.Account.resetPassword(values).then(() => navigate('/pages/login/login3')).catch(err => console.log('err', err))
                         setSubmitting(true)
                         if (scriptedRef.current) {
                             setStatus({ success: true });
