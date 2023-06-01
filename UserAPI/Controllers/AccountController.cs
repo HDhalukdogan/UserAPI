@@ -312,9 +312,10 @@ namespace UserAPI.Controllers
         }
         //[Authorize(Roles ="admin")]
         [HttpGet("getAllUser")]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
+        public async Task<IActionResult> GetUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            var users = await _userManager.Users.ToListAsync();
+            return Ok(users);
         }
 
 
