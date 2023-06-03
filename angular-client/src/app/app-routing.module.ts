@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import { DatatableComponent } from './demo/elements/datatable/datatable.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
       {
         path: 'typography',
         loadComponent: () => import('./demo/elements/typography/typography.component')
+      },
+      {
+        path: 'datatable',
+        component:DatatableComponent
       },
       {
         path: 'color',

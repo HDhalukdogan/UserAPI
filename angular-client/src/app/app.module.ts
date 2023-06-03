@@ -18,6 +18,8 @@ import { NavItemComponent } from './theme/layout/admin/navigation/nav-content/na
 import { SharedModule } from './theme/shared/shared.module';
 import { ConfigurationComponent } from './theme/layout/admin/configuration/configuration.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import { DatatableComponent } from './demo/elements/datatable/datatable.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -33,14 +35,16 @@ import { GuestComponent } from './theme/layout/guest/guest.component';
     NavItemComponent,
     NavCollapseComponent,
     ConfigurationComponent,
-    GuestComponent
+    GuestComponent,
+    DatatableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SharedModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    DataTablesModule
   ],
   providers: [NavigationItem],
   bootstrap: [AppComponent]
