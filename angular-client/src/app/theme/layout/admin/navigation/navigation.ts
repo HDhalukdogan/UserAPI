@@ -89,6 +89,14 @@ const NavigationItems = [
         icon: 'ti ti-typography'
       },
       {
+        id: 'datatable',
+        title: 'DataTable',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/datatable',
+        icon: 'ti ti-table'
+      },
+      {
         id: 'color',
         title: 'Colors',
         type: 'item',

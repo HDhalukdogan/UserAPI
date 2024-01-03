@@ -11,6 +11,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 
 // bootstrap import
 import { NgbDropdownModule, NgbNavModule, NgbModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   imports: [
@@ -32,12 +33,13 @@ import { NgbDropdownModule, NgbNavModule, NgbModule, NgbCollapseModule } from '@
     CardModule,
     BreadcrumbModule,
     SpinnerComponent,
+    ModalComponent,
     NgbModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbCollapseModule,
     NgScrollbarModule
   ],
-  declarations: [SpinnerComponent]
+  declarations: [SpinnerComponent, ModalComponent]
 })
 export class SharedModule {}
