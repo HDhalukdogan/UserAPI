@@ -21,7 +21,7 @@ async function loginUser(email: string,password : string): Promise<User | undefi
   }
 }
 
-export const { auth, signIn, signOut, handlers: { GET, POST }, update } = NextAuth({
+export const { auth, signIn, signOut, handlers, update } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
