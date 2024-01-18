@@ -7,6 +7,8 @@ export type User = {
   name: string;
   email: string;
   password: string;
+  access_token:string
+  roles?:string[]
 };
 
 export type Customer = {
