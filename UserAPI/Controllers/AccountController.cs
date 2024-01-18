@@ -310,7 +310,7 @@ namespace UserAPI.Controllers
 
             return Ok(users);
         }
-        //[Authorize(Roles ="admin")]
+        [Authorize(Roles ="admin")]
         [HttpGet("getAllUser")]
         public async Task<IActionResult> GetUsersAsync()
         {

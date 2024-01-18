@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 
 const baseUrl = process.env.API_URL;
 
@@ -37,10 +38,11 @@ async function del(url: string) {
 }
 
 async function getHeaders() {
-    const token =null;
+    const session = await auth();
+    console.log('session', session)
     const headers = { 'Content-type': 'application/json' } as any;
-    if (token) {
-        headers.Authorization = 'Bearer ' //+ token.access_token
+    if (session?.user.access_token) {
+        headers.Authorization = 'Bearer ' + session?.user.access_token
     }
     return headers
 }
