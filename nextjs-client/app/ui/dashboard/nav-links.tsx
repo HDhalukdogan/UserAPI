@@ -1,32 +1,18 @@
 'use client';
 
-import {
-  UserGroupIcon,
-  HomeIcon,
-  DocumentDuplicateIcon,
-} from '@heroicons/react/24/outline';
+import { HomeIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useEffect } from 'react';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard',
-    icon: DocumentDuplicateIcon,
-  },
-  { name: 'Customers', href: '/dashboard', icon: UserGroupIcon },
+  { name: 'Home', href: '/dashboard', icon: HomeIcon }
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
-  useEffect(() => {
-  }, [])
-  
 
   return (
     <>

@@ -39,7 +39,6 @@ async function del(url: string) {
 
 async function getHeaders() {
     const session = await auth();
-    console.log('session', session)
     const headers = { 'Content-type': 'application/json' } as any;
     if (session?.user.access_token) {
         headers.Authorization = 'Bearer ' + session?.user.access_token
