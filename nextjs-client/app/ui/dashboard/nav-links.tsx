@@ -36,8 +36,15 @@ export default function NavLinks() {
         );
       })}
       <div className=' p-2 bg-blue-50 rounded border-blue-500 hover:bg-blue-200 text-gray-500'>
+
         {session.data?.user.email}
       </div>
+      { session.data?.user.roles.includes("admin") &&<div className=' p-2 bg-blue-50 rounded border-blue-500 hover:bg-blue-200 text-gray-500'>
+        <Link href="/admin">
+          Admin
+        </Link>
+      </div>}
+
     </>
   );
 }

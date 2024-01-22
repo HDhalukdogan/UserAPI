@@ -10,7 +10,7 @@ export default function AdminNavbar() {
         <Navbar>
             <NavbarBrand>
                 <AcmeLogo />
-                <Link href="/admin">
+                <Link href="/dashboard">
                     <p className="font-bold text-inherit ms-1">NEXTJS</p>
                 </Link>
             </NavbarBrand>

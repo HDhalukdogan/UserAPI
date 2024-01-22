@@ -21,9 +21,12 @@ export const authConfig = {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && isOnLogin) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+        return Response.redirect(new URL(nextUrl.searchParams.get("callbackUrl") || '/dashboard', nextUrl));
       } else if (!auth?.user.roles.includes("admin") && isOnAdmin) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/dashboard', nextUrl));
+        }
+        return false
       }
       return true;
     },
