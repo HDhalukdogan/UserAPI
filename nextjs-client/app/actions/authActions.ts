@@ -2,6 +2,8 @@
 import { signIn } from "@/auth";
 import { AuthError, User } from 'next-auth';
 import { fetchWrapper } from "../lib/fetchWrapper";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function authenticate(
     prevState: string | undefined,
@@ -45,4 +47,29 @@ export async function authenticate(
   export async function getAllUsers() {
     const users = await fetchWrapper.get("account/getAllUser")
     return users
+  }
+  export async function getAllRoles() {
+    const roles = await fetchWrapper.get("account/getAllRoles")
+    return roles
+  }
+  export async function getUsersWithRoles() {
+    const users = await fetchWrapper.get("account/users-with-roles")
+    return users
+  }
+  export async function createRole(roleName:string) {
+    await fetchWrapper.post(`account/createrole?roleName=${roleName}`,{})
+    revalidatePath("/admin/roles")
+    redirect("/admin/roles");
+  }
+
+  export async function updateRole(roleName:string,updatedRoleName:string) {
+    await fetchWrapper.put(`account/updaterole/${roleName}?updatedName=${updatedRoleName}`,{})
+    revalidatePath("/admin/roles")
+    redirect("/admin/roles");
+  }
+
+  export async function deleteRole(roleName:string) {
+    await fetchWrapper.del(`account/deleterole/${roleName}`)
+    revalidatePath("/admin/roles")
+    redirect("/admin/roles");
   }

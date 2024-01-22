@@ -1,4 +1,4 @@
-import { getAllUsers } from "../actions/authActions"
+import { getAllUsers } from "../../actions/authActions"
 
 export default async function page() {
 
