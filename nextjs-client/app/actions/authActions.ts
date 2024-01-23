@@ -48,9 +48,17 @@ export async function authenticate(
     const users = await fetchWrapper.get("account/getAllUser")
     return users
   }
+  export async function getUserWithRoles(id:string) {
+    const user = await fetchWrapper.get(`account/getUserById/${id}`)
+    return user
+  }
   export async function getAllRoles() {
     const roles = await fetchWrapper.get("account/getAllRoles")
     return roles
+  }
+  export async function getRoleWithUsers(roleName : string) {
+    const users = await fetchWrapper.get(`account/getRoleWithUsers/${roleName}`)
+    return users
   }
   export async function getUsersWithRoles() {
     const users = await fetchWrapper.get("account/users-with-roles")

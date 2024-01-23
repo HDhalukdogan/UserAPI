@@ -224,6 +224,14 @@ namespace UserAPI.Controllers
 
         }
         //[Authorize(Roles ="admin")]
+        [HttpGet("getRoleWithUsers/{roleName}")]
+        public async Task<IActionResult> GetRoleWithUsers(string roleName)
+        {
+            var users = await _userManager.GetUsersInRoleAsync(roleName);
+            return Ok(users);
+
+        }
+        //[Authorize(Roles ="admin")]
         [HttpPost("edit-roles/{username}")]
         public async Task<IActionResult> EditRoles(string username, [FromQuery] string roles)
         {
@@ -307,6 +315,24 @@ namespace UserAPI.Controllers
                     Roles = u.AppUserRoles.Select(r => r.AppRole.Name).ToList()
                 })
                 .ToListAsync();
+
+            return Ok(users);
+        }
+        //[Authorize(Roles = "admin")]
+        [HttpGet("getUserById/{id}")]
+        public async Task<IActionResult> GetUserByIdWithRoles(Guid id)
+        {
+            var users = await _userManager.Users
+                .Include(r => r.AppUserRoles)
+                .ThenInclude(r => r.AppRole)
+                .OrderBy(u => u.UserName)
+                .Select(u => new
+                {
+                    u.Id,
+                    Username = u.UserName,
+                    Roles = u.AppUserRoles.Select(r => r.AppRole.Name).ToList()
+                })
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             return Ok(users);
         }

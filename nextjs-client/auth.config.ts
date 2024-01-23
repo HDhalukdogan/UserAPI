@@ -1,4 +1,4 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, Session } from 'next-auth';
 
 export const authConfig = {
   session: {
@@ -22,7 +22,7 @@ export const authConfig = {
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && isOnLogin) {
         return Response.redirect(new URL(nextUrl.searchParams.get("callbackUrl") || '/dashboard', nextUrl));
-      } else if (!auth?.user.roles.includes("admin") && isOnAdmin) {
+      } else if (!hasRole(auth, ["admin"]) && isOnAdmin) {
         if (isLoggedIn) {
           return Response.redirect(new URL('/dashboard', nextUrl));
         }
@@ -50,3 +50,8 @@ export const authConfig = {
     },
   },
 } satisfies NextAuthConfig;
+
+
+const hasRole = (auth: Session | null, roles: string[]): boolean | undefined => {
+  return auth?.user.roles.some(r => roles.includes(r));
+}
