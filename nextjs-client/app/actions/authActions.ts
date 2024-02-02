@@ -48,6 +48,10 @@ export async function authenticate(
     const users = await fetchWrapper.get("account/getAllUser")
     return users
   }
+  export async function getAllUserExcelBase64() {
+    const base64 = await fetchWrapper.getBase64("account/getAllUserExcel")
+    return base64
+  }
   export async function getUserWithRoles(id:string) {
     const user = await fetchWrapper.get(`account/getUserById/${id}`)
     return user

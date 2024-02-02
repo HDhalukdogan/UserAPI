@@ -10,6 +10,20 @@ async function get(url: string) {
     const response = await fetch(baseUrl + url, requestOptions);
     return await handleResponse(response)
 }
+async function getBase64(url: string) {
+    const requestOptions = {
+        method: 'GET',
+        headers: await getHeaders()
+    }
+    const response = await fetch(baseUrl + url, requestOptions);
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const base64 = btoa(new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+    return base64;
+}
 async function post(url: string, body: {}) {
     const requestOptions = {
         method: 'POST',
@@ -71,6 +85,7 @@ async function handleResponse(response: Response) {
 
 export const fetchWrapper = {
     get,
+    getBase64,
     post,
     put,
     del
