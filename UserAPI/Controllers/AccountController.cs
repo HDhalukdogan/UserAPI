@@ -21,12 +21,14 @@ namespace UserAPI.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly TokenService _tokenService;
+        private readonly FileService _fileService;
 
-        public AccountController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, TokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, TokenService tokenService, FileService fileService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenService = tokenService;
+            _fileService = fileService;
         }
 
         [HttpPost("register")]
@@ -140,7 +142,7 @@ namespace UserAPI.Controllers
             }
 
             var decodedToken = HttpUtility.UrlDecode(resetPasswordDto.Token);
-            
+
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDto.NewPassword);
             if (!result.Succeeded)
             {
@@ -338,7 +340,7 @@ namespace UserAPI.Controllers
 
             return Ok(users);
         }
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         [HttpGet("getAllUser")]
         public async Task<IActionResult> GetUsersAsync()
         {
@@ -369,6 +371,13 @@ namespace UserAPI.Controllers
             workbook.SaveAs(stream);
             var content = stream.ToArray();
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Users.xlsx");
+        }
+
+        [HttpPost("postFile")]
+        public async Task<ActionResult> PostFile([FromForm] FileModel file, CancellationToken cancellationToken)
+        {
+            var path = await _fileService.UploadFileAsync(file.FormFile);
+            return Ok(new { path });
         }
     }
 }

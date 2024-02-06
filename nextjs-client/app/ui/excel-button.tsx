@@ -8,9 +8,11 @@ import { blobHelper } from '../lib/blobHelper'
 export default function ExcelButton() {
 
     const handleClick = async () => {
-        const base64Result = await getAllUserExcelBase64();
-        const blob = blobHelper.base64toBlob(base64Result, 'application/octet-stream');
-        blobHelper.blobDownload(blob,"abc.xlsx")
+        const { base64, filename, contentType } = await getAllUserExcelBase64();
+        const ct = contentType || 'application/octet-stream';
+        const blob = blobHelper.base64toBlob(base64, ct);
+        const fn = filename || "users.xlsx"
+        blobHelper.blobDownload(blob, fn)
     }
 
     return (

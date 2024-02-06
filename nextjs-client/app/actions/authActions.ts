@@ -49,8 +49,8 @@ export async function authenticate(
     return users
   }
   export async function getAllUserExcelBase64() {
-    const base64 = await fetchWrapper.getBase64("account/getAllUserExcel")
-    return base64
+    const result = await fetchWrapper.getBase64("account/getAllUserExcel")
+    return result
   }
   export async function getUserWithRoles(id:string) {
     const user = await fetchWrapper.get(`account/getUserById/${id}`)
@@ -84,4 +84,9 @@ export async function authenticate(
     await fetchWrapper.del(`account/deleterole/${roleName}`)
     revalidatePath("/admin/roles")
     redirect("/admin/roles");
+  }
+
+  export async function uploadFile(body:FormData) {
+   const response = await fetchWrapper.postFormData('account/postFile',body)
+    return response
   }

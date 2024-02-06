@@ -46,6 +46,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<FileService>();
 
 builder.Services.AddCors(options =>
 {
@@ -66,6 +67,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("reactangular");
+
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
