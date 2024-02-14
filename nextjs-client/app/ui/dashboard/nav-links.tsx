@@ -4,7 +4,7 @@ import { HomeIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useSession } from 'next-auth/react';
+import { useAppSelector } from '@/app/lib/hooks';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -14,7 +14,8 @@ const links = [
 
 export default function NavLinks() {
   const pathname = usePathname();
-  const session = useSession();
+  const user = useAppSelector(state=>state.account.user)
+  console.log('user', user)
   return (
     <>
       {links.map((link) => {
@@ -37,9 +38,9 @@ export default function NavLinks() {
       })}
       <div className=' p-2 bg-blue-50 rounded border-blue-500 hover:bg-blue-200 text-gray-500'>
 
-        {session.data?.user.email}
+        {user?.email}
       </div>
-      { session.data?.user.roles.includes("admin") &&<div className=' p-2 bg-blue-50 rounded border-blue-500 hover:bg-blue-200 text-gray-500'>
+      { user?.roles.includes("admin") &&<div className=' p-2 bg-blue-50 rounded border-blue-500 hover:bg-blue-200 text-gray-500'>
         <Link href="/admin">
           Admin
         </Link>
