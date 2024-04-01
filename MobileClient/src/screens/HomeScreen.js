@@ -1,23 +1,44 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Entypo } from '@expo/vector-icons';
-import React from 'react'
+import React, { useContext } from 'react'
+import { Context } from '../context/AuthContext';
 
 const HomeScreen = ({ navigation }) => {
+  const { state, signout } = useContext(Context)
   return (
     <View>
       <Text>HomeScreen</Text>
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          {
-            backgroundColor: pressed ? '#34495e' : '#3498db', // Change color on press
-          },
-        ]}
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Entypo name="login" size={24} color="white" />
-        <Text style={styles.buttonText}>Login or Register</Text>
-      </Pressable>
+
+      {state.email ?
+        <View>
+          <Text>{state.email}</Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              {
+                backgroundColor: pressed ? '#34495e' : '#3498db',
+              },
+            ]}
+            onPress={() => signout()}
+          >
+            <Entypo name="login" size={24} color="white" />
+            <Text style={styles.buttonText}>Logout</Text>
+          </Pressable>
+        </View>
+        :
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            {
+              backgroundColor: pressed ? '#34495e' : '#3498db',
+            },
+          ]}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Entypo name="login" size={24} color="white" />
+          <Text style={styles.buttonText}>Login or Register</Text>
+        </Pressable>
+      }
     </View>
   )
 }

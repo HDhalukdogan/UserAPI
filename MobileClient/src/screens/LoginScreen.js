@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import AuthForm from '../components/AuthForm'
-import agent from '../api/agent'
+import { Context } from '../context/AuthContext'
 
 const LoginScreen = ({ navigation }) => {
+    const {signin} = useContext(Context);
     const submit = (data) => {
-        agent.Account.login(data).then(res => console.log('res', res)).catch(err => console.log('err', err.response))
-        navigation.navigate('Home');
+        signin(data)
     }
     return (
         <View style={styles.container}>

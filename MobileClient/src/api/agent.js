@@ -1,14 +1,20 @@
 import axios from "axios";
+import * as SecureStore from 'expo-secure-store';
 
 const instance = axios.create({
     baseURL: "http://10.0.2.2:5000/api",
 });
 
-// instance.interceptors.request.use(config => {
-//     const token = store.getState().account.user?.token;
-//     if (token) config.headers.Authorization = `Bearer ${token}`;
-//     return config;
-// })
+instance.interceptors.request.use(async (config) => {
+    const token = await SecureStore.getItemAsync("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+},
+    (err) => {
+        return Promise.reject(err);
+    })
 
 const responseBody = response => response.data;
 
