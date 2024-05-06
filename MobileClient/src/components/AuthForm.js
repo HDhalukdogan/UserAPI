@@ -1,14 +1,20 @@
 import React from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Pressable } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 
-const AuthForm = ({ submit }) => {
+const AuthForm = ({ register, submit }) => {
   const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
-    defaultValues: {
-      name: 'bob@test.com',
-      password: 'Pa$$w0rd'
-    },
+    defaultValues: register ? {
+      name: '',
+      email: '@test.com',
+      password: 'Pa$$w0rd',
+    }
+      :
+      {
+        name: 'bob@test.com',
+        password: 'Pa$$w0rd',
+      },
   });
 
   const onSubmit = (data) => {
@@ -18,7 +24,7 @@ const AuthForm = ({ submit }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>{register ? "Register" : "Login"}</Text>
       <Controller
         control={control}
         name="name"
@@ -32,6 +38,21 @@ const AuthForm = ({ submit }) => {
           />
         )}
       />
+      {
+        register && <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, value, onBlur } }) => (
+            <TextInput
+              value={value}
+              onChangeText={(value) => onChange(value)}
+              onBlur={onBlur}
+              style={styles.input}
+              placeholder="EMAIL"
+            />
+          )}
+        />
+      }
       <Controller
         control={control}
         name="password"
@@ -49,12 +70,12 @@ const AuthForm = ({ submit }) => {
         style={({ pressed }) => [
           styles.button,
           {
-            backgroundColor: pressed ? '#34495e' : '#3498db' 
+            backgroundColor: pressed ? '#34495e' : '#3498db'
           },
         ]}
         onPress={handleSubmit(onSubmit)}
       >
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>{register ? "Register" : "Login"}</Text>
       </Pressable>
     </View>
   );
@@ -86,12 +107,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 8,
     marginVertical: 10,
-},
-buttonText: {
+  },
+  buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-},
+  },
 });
 
 export default AuthForm;
